@@ -164,19 +164,17 @@ public class AircraftControls : MonoBehaviour
 
     private void PitchInput()
     {
-        pitchValue = PlayerInputSingleton.PIS.playerControls.Flying.Pitch.ReadValue<float>() * throttleValue * 5;
-        Debug.Log($"Pitch value: {pitchValue}");
+        pitchValue = Input.GetAxis("Vertical") * throttleValue * 5;
     }
 
     private void RollInput()
     {
-        rollValue = PlayerInputSingleton.PIS.playerControls.Flying.Roll.ReadValue<float>();
+        rollValue = Input.GetAxis("Horizontal");
     }
 
     private void RudderInput()
     {
-        rudderValue = PlayerInputSingleton.PIS.playerControls.Flying.Rudder.ReadValue<float>();
-        Debug.Log($"Rudder value {rudderValue}");
+        rudderValue = Input.GetAxis("Rudder");
     }
 
     #endregion
