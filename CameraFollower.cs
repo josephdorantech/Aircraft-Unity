@@ -6,7 +6,7 @@ public class CameraFollower : MonoBehaviour
 {
     public GameObject cam;
     public GameObject marker;
-    public float followSpeed = 2f;
+    public float followSpeed = 0.3f;
 
     private bool alwaysVertical = true;
 

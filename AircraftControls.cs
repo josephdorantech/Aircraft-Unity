@@ -1,7 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.InputSystem;
 
 [RequireComponent(typeof(Rigidbody))]
 public class AircraftControls : MonoBehaviour
@@ -101,16 +100,11 @@ public class AircraftControls : MonoBehaviour
 
         #region Power control
 
-        throttleValue += PlayerInputSingleton.PIS.playerControls.Flying.Throttle.ReadValue<float>() * (acceleration / 100);
+        throttleValue += Input.GetAxis("Vertical") * (acceleration / 100);
         throttleValue = (throttleValue > maxThrottle) ? maxThrottle : throttleValue;
         throttleValue = (throttleValue < minThrottle) ? minThrottle : throttleValue;
 
         #endregion
-
-        if (vehicleProperties.health.destroyed)
-        {
-            return;
-        }
 
         #region Movement Functions
 
@@ -164,7 +158,7 @@ public class AircraftControls : MonoBehaviour
 
     private void PitchInput()
     {
-        pitchValue = Input.GetAxis("Vertical") * throttleValue * 5;
+        pitchValue = Input.GetAxis("Mouse Y") * throttleValue * 5;
     }
 
     private void RollInput()
