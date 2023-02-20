@@ -1,19 +1,20 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
-[RequireComponent(typeof(Rigidbody))]
-public class CentreOfMassEditor : MonoBehaviour
+namespace JDTechnology
 {
-    private Rigidbody rb;
-    [SerializeField]
-    private Vector3 centreOfGravity;
-
-    // Start is called before the first frame update
-    void Start()
+    [RequireComponent(typeof(Rigidbody))]
+    public class CentreOfMassEditor : MonoBehaviour
     {
-        rb = GetComponent<Rigidbody>();
-        rb.centerOfMass = centreOfGravity;
-    }
+        private Rigidbody rb;
+        [SerializeField]
+        private Vector3 centreOfGravity;
 
+        // Start is called before the first frame update
+        void Start()
+        {
+            rb = GetComponent<Rigidbody>();
+            rb.centerOfMass = centreOfGravity;
+        }
+
+    }
 }

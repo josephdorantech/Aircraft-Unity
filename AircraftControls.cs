@@ -1,77 +1,91 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using JDTechnology;
 using UnityEngine;
 
 [RequireComponent(typeof(Rigidbody))]
 public class AircraftControls : MonoBehaviour
 {
+    #region Aircraft Profiles
+
+    [SerializeField]
+    private AircraftProfiles aircraftProfile;
+
+    #endregion
+
     #region References
 
     private Rigidbody jetRigid;
 
     #endregion
 
-    #region Empty variables
+    #region Player Input
 
-    [HideInInspector]
-    public float pitchValue;
-    [HideInInspector]
-    public float rollValue;
-    [HideInInspector]
-    public float rudderValue;
-    [HideInInspector]
-    public float currentSpeed;
+    private float pitchValue;
+    public float PitchValue
+    {
+        get { return pitchValue; }
+        set { pitchValue = value; }
+    }
 
-    #endregion
 
-    #region Pitch, roll and rudder variables
+    private float rollValue;
+    public float RollValue
+    {
+        get { return rollValue; }
+        set { rollValue = value; }
+    }
 
-    [Header("Control variables")]
-    [Tooltip("This adjusts how fast you roll. A higher value will cause you to roll quicker.")]
-    public float rollForce = 2f;
-    [Tooltip("This adjusts how fast you pitch. A higher value will cause you to pitch up and down quicker.")]
-    public float pitchForce = 1.6f;
-    [Tooltip("This adjusts how fast the rudder moves the plane left and right. A higher value will cause you to turn quicker.")]
-    public float rudderForce = 2f;
 
-    [Space(20)]
+    private float rudderValue;
+    public float RudderValue
+    {
+        get { return rudderValue; }
+        set { rudderValue = value; }
+    }
+
+
+    private float currentSpeed;
+    public float CurrentSpeed
+    {
+        get { return currentSpeed; }
+        set { currentSpeed = value; }
+    }
 
     #endregion
 
     #region Forces
 
-    [Header("Force adaption")]
-    [Tooltip("You shouldn't need to adjust this value. This is to offset the weight of the rigidbody so the above values are relatively normal. Lowering this value will cause the plane acceleration to be more sluggish. Speeding it up will accelerate it faster but might cause unrealistic physics and/or a rubber band effect")]
-    public float thrustModifier = 10f;
-    [Tooltip("You shouldn't need to adjust this value. This is to offset the weight of the rigidbody so the above values are relatively normal. Lowering this value will cause the plane acceleration to be more sluggish. Speeding it up will accelerate it faster but might cause unrealistic physics and/or a rubber band effect")]
-    public float pitchModifier = 10000f;
-    [Tooltip("You shouldn't need to adjust this value. This is to offset the weight of the rigidbody so the above values are relatively normal. Lowering this value will cause the plane acceleration to be more sluggish. Speeding it up will accelerate it faster but might cause unrealistic physics and/or a rubber band effect")]
-    public float rollModifier = 170000f;
-    [Tooltip("You shouldn't need to adjust this value. This is to offset the weight of the rigidbody so the above values are relatively normal. Lowering this value will cause the plane acceleration to be more sluggish. Speeding it up will accelerate it faster but might cause unrealistic physics and/or a rubber band effect")]
-    public float rudderModifier = 220000f;
+    /// <summary>
+    /// You shouldn't need to adjust the following values. 
+    /// This is to offset the weight of the rigidbody so the above values are relatively normal. 
+    /// Lowering these values will cause the plane acceleration to be more sluggish. 
+    /// Upping them will accelerate it faster BUT MIGHT cause unrealistic physics 
+    /// and/or a rubber band effect
+    /// </summary>
+    private float thrustModifier = 10f;
+    private float pitchModifier = 10000f;
+    private float rollModifier = 170000f;
+    private float rudderModifier = 220000f;
 
-    [Space(20)]
     #endregion
 
     #region Throttle
 
-    [HideInInspector]
-    public float throttleValue;
+    /// <summary>
+    /// This is the main throttle control. It acts like a real plane throttle.
+    /// "W" will increase it slowly, and "S" will decrease it slowly.
+    /// </summary>
+    
+    private float throttleValue;
+    public float ThrottleValue
+    {
+        get { return throttleValue; }
+        set { throttleValue = value; }
+    }
 
-    [Header("Throttle values")]
-
-    public float maxThrottle = 10f;
-    public float minThrottle = -2f;
-    [Range(0.1f, 5)]
-    public float acceleration = 1f;
-
-    [Space(20)]
     #endregion
 
-    #region Taxi settings
+    #region Taxi
 
-    [Header("Taxi Settings")]
-    public float taxiRotationSpeed = 0.4f;
     private bool isGrounded = false;
 
     #endregion
@@ -86,7 +100,7 @@ public class AircraftControls : MonoBehaviour
     {
         #region Speed calcs
 
-        currentSpeed = jetRigid.velocity.magnitude;
+        CurrentSpeed = jetRigid.velocity.magnitude;
 
         #endregion
 
@@ -100,9 +114,9 @@ public class AircraftControls : MonoBehaviour
 
         #region Power control
 
-        throttleValue += Input.GetAxis("Vertical") * (acceleration / 100);
-        throttleValue = (throttleValue > maxThrottle) ? maxThrottle : throttleValue;
-        throttleValue = (throttleValue < minThrottle) ? minThrottle : throttleValue;
+        ThrottleValue += Input.GetAxis("Vertical") * (aircraftProfile.acceleration / 100);
+        ThrottleValue = (ThrottleValue > aircraftProfile.maxThrottle) ? aircraftProfile.maxThrottle : ThrottleValue;
+        ThrottleValue = (ThrottleValue < aircraftProfile.minThrottle) ? aircraftProfile.minThrottle : ThrottleValue;
 
         #endregion
 
@@ -132,24 +146,24 @@ public class AircraftControls : MonoBehaviour
 
     private void ForwardThrust()
     {
-        jetRigid.AddForce(transform.forward * throttleValue * thrustModifier, ForceMode.Acceleration);        
+        jetRigid.AddForce(transform.forward * ThrottleValue * thrustModifier, ForceMode.Acceleration);        
     }
 
     #region Pitch, Roll and Rudder Controls
 
     private void PitchControl()
     {
-        jetRigid.AddTorque(transform.right * pitchValue * pitchModifier * pitchForce, ForceMode.Force);
+        jetRigid.AddTorque(transform.right * PitchValue * pitchModifier * aircraftProfile.pitchForce, ForceMode.Force);
     }
 
     private void RollControl()
     {
-        jetRigid.AddTorque(transform.forward * -rollValue * rollForce * rollModifier, ForceMode.Force);
+        jetRigid.AddTorque(transform.forward * -RollValue * aircraftProfile.rollForce * rollModifier, ForceMode.Force);
     }
 
     private void RudderControl()
     {
-        jetRigid.AddTorque(transform.up * rudderValue * rudderForce * rudderModifier, ForceMode.Force);
+        jetRigid.AddTorque(transform.up * RudderValue * aircraftProfile.rudderForce * rudderModifier, ForceMode.Force);
     }
 
     #endregion
@@ -158,17 +172,17 @@ public class AircraftControls : MonoBehaviour
 
     private void PitchInput()
     {
-        pitchValue = Input.GetAxis("Mouse Y") * throttleValue * 5;
+        PitchValue = Input.GetAxis("Mouse Y") * ThrottleValue * 5;
     }
 
     private void RollInput()
     {
-        rollValue = Input.GetAxis("Horizontal");
+        RollValue = Input.GetAxis("Horizontal");
     }
 
     private void RudderInput()
     {
-        rudderValue = Input.GetAxis("Rudder");
+        RudderValue = Input.GetAxis("Rudder");
     }
 
     #endregion
@@ -187,7 +201,7 @@ public class AircraftControls : MonoBehaviour
 
     private void TaxiRotate()
     {
-        Quaternion rotation = Quaternion.Euler(0f, rollValue * taxiRotationSpeed, 0f);
+        Quaternion rotation = Quaternion.Euler(0f, RollValue * aircraftProfile.taxiRotationSpeed, 0f);
         jetRigid.MoveRotation(jetRigid.rotation * rotation);
     }
 

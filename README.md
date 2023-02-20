@@ -1,6 +1,15 @@
 # Aircraft-Unity
 A collection of scripts for rigidbody aircraft controllers in Unity. Also contains Camera scripts and rigidbody modifiers.
 
+This will require an addition to the Input Manager (Check Project Settings).
+You will need an addition of "Rudder". You will need to change:
+-Negative button: (e.g, "q"). This is left.
+-Positive button: (e.g, "e"). This is right.
+-Gravity: 3
+-Sensitivity: 3
+-Snap: True
+
+
 Aircraft controls - For controlling jets/airplanes. Requires a rigidbody component with the following values:
                         Mass: 5000
                         Drag: 1
@@ -10,9 +19,14 @@ Aircraft controls - For controlling jets/airplanes. Requires a rigidbody compone
                         Interpolate: Interpolate
                         Collision Detection: Discrete
 
+                    This script set uses Scriptable Objects. Using these it should be quite quick to prototype aicraft presets. You will find them under /JDTechnology/AircraftProfiles. Drag the profile onto the AircraftControl.cs, which should be at the top of the hierarchy of the plane object.
+
                     Every value on script can be changed, apart from the "Force Adaption" settings. These modify the input forces so the Control variables are not extreme values. Only change Force Adaption settings IF ABSOLUTELY NECESSARY. 
 
                     The throttle is emulative of a real aircraft throttle. It's cumulative, so you don't have to keep holding "W". 
+
+                    You won't be able to lift off until you reach a certain speed.
+                    Pitch control is tied to aircraft speed.
 
                     Acceleration is how fast max throttle is reached.
 

@@ -1,37 +1,38 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
-public class ToggleMouseLock : MonoBehaviour
+namespace JDTechnology
 {
-    public bool mouseLocked = true;
-
-    private void Start()
+    public class ToggleMouseLock : MonoBehaviour
     {
-        ToggleMouse(!mouseLocked);
-    }
+        public bool mouseLocked = true;
 
-    private void Update()
-    {
-        if (Input.GetButtonDown("space"))
+        private void Start()
         {
-            ToggleMouse(mouseLocked);
+            ToggleMouse(!mouseLocked);
         }
-    }
 
-    private void ToggleMouse(bool isLocked)
-    {
-        if (isLocked)
+        private void Update()
         {
-            Cursor.lockState = CursorLockMode.None;
-            Cursor.visible = true;
-            mouseLocked = false;
+            if (Input.GetButtonDown("space"))
+            {
+                ToggleMouse(mouseLocked);
+            }
         }
-        else
+
+        private void ToggleMouse(bool isLocked)
         {
-            Cursor.lockState = CursorLockMode.Locked;
-            Cursor.visible = false;
-            mouseLocked = true;
+            if (isLocked)
+            {
+                Cursor.lockState = CursorLockMode.None;
+                Cursor.visible = true;
+                mouseLocked = false;
+            }
+            else
+            {
+                Cursor.lockState = CursorLockMode.Locked;
+                Cursor.visible = false;
+                mouseLocked = true;
+            }
         }
     }
 }
